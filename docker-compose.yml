@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  mysql:
+    image: "bitnami/mysql:latest"
+    env_file: .env
+    ports:
+      - "3306:3306"
+
+  laravel:
+    image: "bitnami/laravel:latest"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_DATABASE=${MYSQL_DATABASE}
+    depends_on:
+      - mysql
+  vue:
+    build:
+      context: ./vue-webapp
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
